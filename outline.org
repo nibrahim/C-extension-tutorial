@@ -1,0 +1,47 @@
+Python extensions tutorial
+
+* Day schedule
+|  Time | Activity               | Time |
+|-------+------------------------+------|
+|   930 | Start                  |    0 |
+|  1100 | Break (10 minutes)     |   90 |
+|  1110 | Resume                 |    0 |
+|  1215 | Lunch break            |   65 |
+|  1330 | Resume                 |    0 |
+|  1600 | Tea break (10 minutes) |  150 |
+|  1615 | Resume                 |    0 |
+|  1700 | End                    |   45 |
+|-------+------------------------+------|
+| Total |                        |      |
+|       |                        |      |
+  #+TBLFM: @10$3=$I
+ approximately 22 hours totally
+
+
+* Course outline
+  :PROPERTIES:
+  :COLUMNS:  %25ITEM %Duration{+}
+  :END:
+** Aims of the course
+   :PROPERTIES:
+   :Duration: 10
+   :END:
+   - Familiarise with Python/C API
+   - Innards of the interpreter
+** Introduction to extensions
+   :PROPERTIES:
+   :Duration: 10
+   :END: 
+   - Why
+   - When
+   - How
+** Structure of the course
+   :PROPERTIES:
+   :Duration: 5
+   :END:
+   - What we aim to do (libcsv)
+** Using libcsv
+   :PROPERTIES:
+   :Duration: 15
+   :END:
+   
