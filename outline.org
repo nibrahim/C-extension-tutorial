@@ -1,36 +1,52 @@
 Python extensions tutorial
 
 * Day schedule
-|  Time | Activity               | Time |
-|-------+------------------------+------|
-|   930 | Start                  |    0 |
-|  1100 | Break (10 minutes)     |   90 |
-|  1110 | Resume                 |    0 |
-|  1215 | Lunch break            |   65 |
-|  1330 | Resume                 |    0 |
-|  1600 | Tea break (10 minutes) |  150 |
-|  1615 | Resume                 |    0 |
-|  1700 | End                    |   45 |
-|-------+------------------------+------|
-| Total |                        |      |
-|       |                        |      |
-  #+TBLFM: @10$3=$I
- approximately 22 hours totally
+|           Time | Activity               | Time |
+|----------------+------------------------+------|
+|            930 | Start                  |    0 |
+|           1215 | Lunch break            |  165 |
+|           1315 | Resume                 |    0 |
+|           1600 | Tea break (10 minutes) |  165 |
+|           1615 | Resume                 |    0 |
+|           1730 | End                    |   45 |
+|----------------+------------------------+------|
+|          Total |                        |  375 |
+| Number of days |                        |    2 |
+|  Total minutes |                        |  750 |
+|    Total hours |                        | 12.5 |
+  #+TBLFM: @8$3=vsum(@2..@-I-1)::@10$3=@-1*@-2::@11$3=@-1/60.0
+
+* Course schedule
+  | Slot            | Time (hours) | Area                       |
+  |-----------------+--------------+----------------------------|
+  | Day 1 morning   |          165 | Introduction and basics    |
+  | Day 1 afternoon |          255 |                            |
+  | Day 2 morning   |          165 |                            |
+  | Day 2 afternoon |          255 | Packaging and distribution |
+  |-----------------+--------------+----------------------------|
+  | Total           |          14. |                            |
+  #+TBLFM: @6$2=vsum(@2..@-I-1)
+
+* Once registered
+  - Contact me for system setup if you need help +919880240460
+  - Prerequisites should be done before the training
 
 
 * Course outline
   :PROPERTIES:
-  :COLUMNS:  %25ITEM %Duration{+}
+  :COLUMNS:  %TODO %52ITEM %Duration{+} %Slot
   :END:
 ** Aims of the course
    :PROPERTIES:
    :Duration: 10
+   :Slot:     Day 1 morning
    :END:
    - Familiarise with Python/C API
    - Innards of the interpreter
 ** Introduction to extensions
    :PROPERTIES:
    :Duration: 10
+   :Slot:     Day 1 morning
    :END: 
    - Why
    - When
@@ -38,10 +54,87 @@ Python extensions tutorial
 ** Structure of the course
    :PROPERTIES:
    :Duration: 5
+   :Slot:     Day 1 morning
    :END:
    - What we aim to do (libcsv)
-** Using libcsv
+   - TDD (using py.test)
+   - Packaging
+   - Live sessions
+
+** Prerequisites
+   :PROPERTIES:
+   :Duration: 10
+   :Slot:     Day 1 morning
+   :END:
+   - System setup
+     - Python 3.1.2 http://python.org/ftp/python/3.1.2/Python-3.1.2.tar.bz2
+     - Install virtualenv3 http://bitbucket.org/brandon/virtualenv3
+     - Upgrade to distribute =easy_install -U distribute=
+     - Install pylib easy_install py
+   - Extra downloads 
+     - sample CSV file http://www.themiddleclass.org/csv
+     - libcsv
+       http://sourceforge.net/projects/libcsv/files/libcsv/libcsv-3.0.0/libcsv-3.0.0.tar.gz/download
+
+** Using =libcsv=
    :PROPERTIES:
    :Duration: 15
+   :Slot:     Day 1 morning
    :END:
-   
+   - Quick overview of how to use libcsv to parse a "large" CSV file
+     and print out fields.
+   - Compile and run a few programs to display information as well as
+     print data
+** Organisation
+   :PROPERTIES:
+   :Duration: 10
+   :Slot:     Day 1 morning
+   :END:
+   - _ccsv.so and ccsv.py with the latter for import.
+   - Directories and stuff
+** Structure of a Python module written in C
+   :PROPERTIES:
+   :Duration: 90
+   :Slot:     Day 1 morning
+   :END:
+   - Basics
+     - Various structures and what they represent
+     - Reference counts
+   - Custom types (new classes)
+     - Creating a new class
+     - Class methods
+     - Objects of the class
+     - Object methods
+     - Exposing elements of the class
+** TODO Wrapping libcsv
+   :PROPERTIES:
+   :Duration: 220
+   :Slot:     Day 1 afternoon
+   :END:
+   - Create a file like object with some extra methods
+     - Number of lines, column headers etc.
+   - Need to redo this based on what's provided by the libcsv
+** TODO Wrapping libcsv
+   :PROPERTIES:
+   :Duration: 200
+   :Slot:     Day 2 morning
+   :END:
+   - Remaining parts
+** Packaging
+   :PROPERTIES:
+   :Duration: 80
+   :Slot:     Day 2 afternoon
+   :END:
+   - Distutils 
+   - Packaging the module
+** Open session 
+   :PROPERTIES:
+   :Duration: 100
+   :Slot:     Day 2 afternoon
+   :END:
+
+
+
+
+
+
