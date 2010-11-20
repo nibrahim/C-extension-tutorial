@@ -30,8 +30,6 @@ Python extensions tutorial
 * Once registered
   - Contact me for system setup if you need help +919880240460
   - Prerequisites should be done before the training
-
-
 * Course outline
   :PROPERTIES:
   :COLUMNS:  %TODO %52ITEM %Duration{+} %Slot
@@ -138,3 +136,19 @@ Python extensions tutorial
 
 
 
+* Work notes
+** C program using libcsv 
+   CLOCK: [2010-11-20 Sat 22:45]--[2010-11-20 Sat 23:18] =>  0:33
+*** Things to include
+    - Options to the =cvs_init= function
+      - Intialisation and =csv_set_opts=
+    - Callback based parsing. Pass Python functions in here. 
+    - Changing options
+    - We are *not* doing CSV writing
+
+* Overall module design.
+  - Initialise file like parser object with file name
+  - We should be able to do a =for i in fp= and get back rows.
+  - We can change parameters on the fly with a set_something (or
+    descriptors - even better).
+    
