@@ -2,3 +2,4 @@ libcsv-3.0.0
 *.so
 *.html
 *.o
+csv_test
