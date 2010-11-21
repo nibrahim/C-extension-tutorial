@@ -2,3 +2,4 @@
 *.html
 *.o
 csv_test
+*.pyc
