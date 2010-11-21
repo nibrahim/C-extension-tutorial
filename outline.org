@@ -144,7 +144,9 @@ Python extensions tutorial
       - Intialisation and =csv_set_opts=
     - Callback based parsing. Pass Python functions in here. 
     - Changing options
-    - We are *not* doing CSV writing
+    - Error handling!
+** Homework
+   - Implement writing CSV files
 
 * Overall module design.
   - Initialise file like parser object with file name
