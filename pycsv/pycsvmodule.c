@@ -1,4 +1,5 @@
 #include <Python.h>
+#include "structmember.h"
 
 /** Here, we create our new type **/
 
@@ -6,28 +7,62 @@
    using */
 typedef struct {
     PyObject_HEAD
+    PyObject *file;
 } PyCSVFile;
 
 /* Type Method definitions */
+
+static void
+PyCSVFile_dealloc(PyCSVFile* self)
+{
+    Py_XDECREF(self->file);
+    Py_TYPE(self)->tp_free((PyObject*)self);
+}
+
+static PyObject *
+PyCSVFile_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+  PyCSVFile *retval;
+  retval = (PyCSVFile *)type->tp_alloc(type, 0);
+  if (retval != NULL) {
+    Py_INCREF(Py_None);
+    retval->file = Py_None;
+  }
+  return (PyObject *)retval;
+}
+
 static int
 PyCSVFile_init(PyCSVFile *self, PyObject *args, PyObject *kwds)
 {
-  PyObject *file = NULL;
+  PyObject *file = NULL, *tmp;
   if (! PyArg_ParseTuple(args,"O", &file)) {
     return -1;
   }
- 
+
+  if (file) {
+    tmp = self->file; 
+    Py_INCREF(file);
+    self->file = file;
+    Py_XDECREF(tmp);
+    /* Not as follows
+
+       Py_XDECREF(self->file);
+       Py_INCREF(file);
+       self->file = file;
+
+       The destructor code could access the ->file member
+    */
+  }
+  PyObject_SetAttrString((PyObject *)self, "_file", file);
   return 0;
 }
 
-/* Adding the methods to the type */
-/* static PyMethodDef Noddy_methods[] = { */
-/*     {"name", (PyCFunction)Noddy_name, METH_NOARGS, */
-/*      "Return the name, combining the first and last name" */
-/*     }, */
-/*     {NULL}  /\* Sentinel *\/ */
-/* }; */
 
+/* Methods and attributes */
+static PyMemberDef PyCSVFile_members[] = {
+  {"_file", T_OBJECT_EX, offsetof(PyCSVFile, file), 0, "File"},
+  {NULL}
+};
 
 /* This is the Python type definition which is used to find what
    function to call when type methods are accessed */
@@ -36,7 +71,7 @@ static PyTypeObject PyCSVFileType = {
   "pycsv.CSVFile",			/* tp_name */
   sizeof(PyCSVFile),			/* tp_basicsize */
   0,					/* tp_itemsize */
-  0,					/* tp_dealloc */
+  (destructor)PyCSVFile_dealloc,            /*tp_dealloc*/
   0,					/* tp_print */
   0,					/* tp_getattr */
   0,					/* tp_setattr */
@@ -59,8 +94,8 @@ static PyTypeObject PyCSVFileType = {
   0,					/* tp_weaklistoffset */
   0,					/* tp_iter */
   0,					/* tp_iternext */
-  0,					/*Noddy_methods,              tp_methods */
-  0,					/*Noddy_members,              tp_members */
+  0,					/* tp_methods */
+  PyCSVFile_members,                        /* tp_members */
   0,					/* tp_getset */
   0,					/* tp_base */
   0,					/* tp_dict */
@@ -69,7 +104,7 @@ static PyTypeObject PyCSVFileType = {
   0,					/* tp_dictoffset */
   (initproc)PyCSVFile_init,		/* tp_init */
   0,					/* tp_alloc */
-  0,					/* tp_new */
+  PyCSVFile_new,                        /* tp_new */
 };
 
 
