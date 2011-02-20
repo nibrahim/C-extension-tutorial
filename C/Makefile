@@ -3,3 +3,6 @@ csv_test: trial0.c Makefile
 
 check-syntax:
 	gcc -Wall -o nul -S ${CHK_SOURCES}
+
+clean:
+	rm csv_test

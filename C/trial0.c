@@ -10,8 +10,9 @@ struct csv_parser parser; /* Declare the parser */
 void 
 parse_field(void *data, size_t len, void * dummy) 
 {
-  char * t = data;
-  printf("   %s\n",t);
+  char *t = (char *)data;
+  t[len] = '\0';
+  printf("   '%s'\n",t);
 }
 
 void 
@@ -29,7 +30,7 @@ main()
   data = (char *)malloc(sizeof(char) * FILE_SIZE);
   memset(data, '\0', FILE_SIZE);
 
-  csv_init(&parser, CSV_APPEND_NULL);
+  csv_init(&parser, CSV_APPEND_NULL|CSV_STRICT);
   fp = fopen(SAMPLE_FILE, "r");
   fread(data, sizeof(char), FILE_SIZE, fp);
 
