@@ -26,4 +26,12 @@ def test_csvfile_storing_file(setup):
         csvfile = pycsv.CSVFile(f)
         assert csvfile._file == f, "Stored _file is not the one we created"
         
+def test_csvfile_parse_method(setup):
+    "Checks to see if there is a parse method that can be called"
+    import pycsv
+
+    with open("tests/sample.csv") as f:
+        csvfile = pycsv.CSVFile(f)
+        csvfile.parse()
+        assert csvfile.parse.__doc__ == "Parses the actual CSV File"
 
