@@ -64,6 +64,28 @@ static PyMemberDef PyCSVFile_members[] = {
   {NULL}
 };
 
+/* Custom Methods for the class */
+
+static PyObject *
+PyCSVFile_parse(PyCSVFile *self, PyObject *args)
+{
+  Py_RETURN_NONE; 
+/* 
+   Properly increment refcounts and return None 
+   Expands to 
+   ( ((PyObject*)((&_Py_NoneStruct)))->ob_refcnt++), (&_Py_NoneStruct);
+*/
+}
+
+static PyMethodDef PyCSVFile_methods[] = {
+    {"parse", (PyCFunction)PyCSVFile_parse, METH_NOARGS,
+     "Parses the actual CSV File"
+    },
+    {NULL}  /* Sentinel */
+};
+
+
+
 /* This is the Python type definition which is used to find what
    function to call when type methods are accessed */
 static PyTypeObject PyCSVFileType = {
@@ -94,8 +116,8 @@ static PyTypeObject PyCSVFileType = {
   0,					/* tp_weaklistoffset */
   0,					/* tp_iter */
   0,					/* tp_iternext */
-  0,					/* tp_methods */
-  PyCSVFile_members,                        /* tp_members */
+  PyCSVFile_methods,                    /* tp_methods */
+  PyCSVFile_members,                    /* tp_members */
   0,					/* tp_getset */
   0,					/* tp_base */
   0,					/* tp_dict */
