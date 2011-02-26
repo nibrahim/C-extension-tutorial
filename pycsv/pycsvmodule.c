@@ -1,5 +1,45 @@
-#include <Python.h>
+#include <Python.h> /* Includes string.h */
 #include "structmember.h"
+
+#include "csv.h"
+
+/* We put all the non python extras that we need over here */
+typedef struct {
+  PyObject *cell_callback;
+  PyObject *row_callback;
+  PyObject *callback_data;
+} CSVCallbacks;
+
+void 
+cell_callback(void *c_cell_data, size_t len, void *extra_data)
+{
+  PyObject *py_cell_callback = ((CSVCallbacks *)extra_data)->cell_callback;
+  PyObject *py_callback_data = ((CSVCallbacks *)extra_data)->callback_data;
+  PyUnicodeObject *py_cell_data;
+  py_cell_data = (PyUnicodeObject *)PyUnicode_FromStringAndSize((const char *)c_cell_data, len);
+
+  if (py_cell_callback != Py_None) {
+    /* We should actually check for errors here */
+    PyObject_CallFunctionObjArgs(py_cell_callback, 
+				 py_cell_data,
+				 py_callback_data,
+				 NULL); 
+  }
+}
+
+void 
+row_callback(int terminator, void *extra_data) 
+{
+  PyObject *py_row_callback = ((CSVCallbacks *)extra_data)->row_callback;
+  PyObject *py_callback_data = ((CSVCallbacks *)extra_data)->callback_data;
+  if (py_row_callback != Py_None) {
+    /* We should actually check for errors here */
+    PyObject_CallFunctionObjArgs(py_row_callback, 
+				 py_callback_data,
+				 NULL); 
+  }
+}
+
 
 /** Here, we create our new type **/
 
@@ -69,19 +109,36 @@ static PyMemberDef PyCSVFile_members[] = {
 static PyObject *
 PyCSVFile_parse(PyCSVFile *self, PyObject *args)
 {
-  Py_RETURN_NONE; 
-/* 
-   Properly increment refcounts and return None 
-   Expands to 
-   ( ((PyObject*)((&_Py_NoneStruct)))->ob_refcnt++), (&_Py_NoneStruct);
-*/
+  PyObject *python_cell_callback = Py_None;
+  PyObject *python_row_callback  = Py_None;
+  PyObject *python_ext_data      = Py_None;
+  char *data              = NULL;
+  CSVCallbacks callbacks;
+  struct csv_parser parser;
+
+  if (! PyArg_ParseTuple(args,"|OOO", &python_cell_callback, &python_row_callback, &python_ext_data)) {
+    return NULL;
+  }
+  data = PyBytes_AsString(PyUnicode_AsASCIIString(PyObject_CallMethod(self->file, "read", NULL)));
+  callbacks.cell_callback = python_cell_callback;
+  callbacks.row_callback  = python_row_callback;
+  callbacks.callback_data = python_ext_data;
+  csv_init(&parser, CSV_APPEND_NULL);
+  csv_parse(&parser, 
+	    data, strlen(data), 
+	    cell_callback, 
+	    row_callback,
+	    &callbacks);
+  Py_RETURN_NONE;
+
+  /* return contents;  */
 }
 
 static PyMethodDef PyCSVFile_methods[] = {
-    {"parse", (PyCFunction)PyCSVFile_parse, METH_NOARGS,
-     "Parses the actual CSV File"
-    },
-    {NULL}  /* Sentinel */
+  {"parse", (PyCFunction)PyCSVFile_parse, METH_VARARGS,
+   "Parses the actual CSV File"
+  },
+  {NULL}  /* Sentinel */
 };
 
 
