@@ -1,3 +1,5 @@
+import py
+
 def test_import(setup):
     "Try importing the module"
     import pycsv
@@ -55,4 +57,19 @@ def test_csvfile_cell_callback(setup):
         csvfile = pycsv.CSVFile(f)
         csvfile.parse(cell_callback, row_callback, tmp)
         assert tmp.rows == [["Header0", "Header1", "Header2"], ["Data00", "Data01", "Data02"], ["Data10", "Data11", "Data12"]]
+
+
+def test_csvfile_bad_file(setup):
+    "Checks to see if we raise an exception if the file we're parsing is broken"
+    import pycsv
+
+    def cell_callback(cell, data):
+        pass
+
+    with open("tests/error.csv") as f:
+        csvfile = pycsv.CSVFile(f)
+        with py.test.raises(pycsv.ParseError):
+            csvfile.parse(cell_callback, None, None)
+        
+        
 
