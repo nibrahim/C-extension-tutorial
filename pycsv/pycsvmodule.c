@@ -50,6 +50,8 @@ typedef struct {
     PyObject *file;
 } PyCSVFile;
 
+PyObject *parse_error; /* The exception which bad CSV files will raise */
+
 /* Type Method definitions */
 
 static void
@@ -114,6 +116,8 @@ PyCSVFile_parse(PyCSVFile *self, PyObject *args)
   PyObject *python_ext_data      = Py_None;
   char *data              = NULL;
   CSVCallbacks callbacks;
+  int processed_length;
+  char *parser_error_message;
   struct csv_parser parser;
 
   if (! PyArg_ParseTuple(args,"|OOO", &python_cell_callback, &python_row_callback, &python_ext_data)) {
@@ -123,12 +127,17 @@ PyCSVFile_parse(PyCSVFile *self, PyObject *args)
   callbacks.cell_callback = python_cell_callback;
   callbacks.row_callback  = python_row_callback;
   callbacks.callback_data = python_ext_data;
-  csv_init(&parser, CSV_APPEND_NULL);
-  csv_parse(&parser, 
-	    data, strlen(data), 
-	    cell_callback, 
-	    row_callback,
-	    &callbacks);
+  csv_init(&parser, CSV_APPEND_NULL|CSV_STRICT);
+  processed_length = csv_parse(&parser, 
+			       data, strlen(data), 
+			       cell_callback, 
+			       row_callback,
+			       &callbacks);
+  if (processed_length != strlen(data)) {
+    parser_error_message = csv_strerror(csv_error(&parser));
+    PyErr_SetString(parse_error, parser_error_message);
+    return NULL;
+  }
   Py_RETURN_NONE;
 
   /* return contents;  */
@@ -188,6 +197,7 @@ static PyTypeObject PyCSVFileType = {
 
 
 /** All the stuff below is for the module **/
+
 static PyMethodDef PyCSVMethods[] = {
   {NULL, NULL, 0, NULL} 
 };
@@ -218,5 +228,8 @@ PyInit_pycsv(void)
 
   Py_INCREF(&PyCSVFileType);
   PyModule_AddObject(c, "CSVFile", (PyObject *)&PyCSVFileType);
+  
+  parse_error = PyErr_NewException("pycsv.ParseError", NULL, NULL);
+  PyModule_AddObject(c, "ParseError", parse_error);
   return c;
 }
