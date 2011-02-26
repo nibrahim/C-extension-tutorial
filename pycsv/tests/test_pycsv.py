@@ -35,3 +35,24 @@ def test_csvfile_parse_method(setup):
         csvfile.parse()
         assert csvfile.parse.__doc__ == "Parses the actual CSV File"
 
+def test_csvfile_cell_callback(setup):
+    "Checks to see if the callback method for each cell and each row is called"
+    import pycsv
+
+    # A simple "struct" (from http://stackoverflow.com/questions/1878710/struct-objects-in-python/1878803#1878803)
+    tmp = lambda : 0
+    tmp.crow = []
+    tmp.rows = []
+
+    def row_callback(data):
+        data.rows.append(data.crow)
+        data.crow = []
+        
+    def cell_callback(cell, data):
+        data.crow.append(cell)
+
+    with open("tests/sample.csv") as f:
+        csvfile = pycsv.CSVFile(f)
+        csvfile.parse(cell_callback, row_callback, tmp)
+        assert tmp.rows == [["Header0", "Header1", "Header2"], ["Data00", "Data01", "Data02"], ["Data10", "Data11", "Data12"]]
+
