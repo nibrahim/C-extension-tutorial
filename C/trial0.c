@@ -38,7 +38,9 @@ main()
 			    parse_field,
 			    parse_row,
 			    NULL);
-  printf("\nParsed %d bytes\n",(int)processed_len);
-
+  printf("\nParsed %d bytes. Original file size %d bytes. \n",(int)processed_len, FILE_SIZE);
+  if (processed_len != FILE_SIZE) {
+    printf("Error! - %s\n", csv_strerror(csv_error(&parser)));
+  }
   return 0;
 }

@@ -154,3 +154,12 @@ Python extensions tutorial
   - We can change parameters on the fly with a set_something (or
     descriptors - even better).
     
+
+
+* Notes on stages
+** Exceptions
+   - Set an exception in a global variable.
+** Mention =-fPIC= 
+** Mention =csv_fini=
+** Mention problems with the way we're executing the callback functions
+** Spend some time on Reference counts. 
